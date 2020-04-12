@@ -695,9 +695,9 @@ func (r *EducationSynchronizationProfileStartRequest) Paging(ctx context.Context
 	}
 	var values []EducationFileSynchronizationVerificationMessage
 	for {
-		defer res.Body.Close()
 		if res.StatusCode != http.StatusOK {
 			b, _ := ioutil.ReadAll(res.Body)
+			res.Body.Close()
 			errRes := &ErrorResponse{Response: res}
 			err := jsonx.Unmarshal(b, errRes)
 			if err != nil {
@@ -710,6 +710,7 @@ func (r *EducationSynchronizationProfileStartRequest) Paging(ctx context.Context
 			value  []EducationFileSynchronizationVerificationMessage
 		)
 		err := jsonx.NewDecoder(res.Body).Decode(&paging)
+		res.Body.Close()
 		if err != nil {
 			return nil, err
 		}

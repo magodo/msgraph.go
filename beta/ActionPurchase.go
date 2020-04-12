@@ -64,9 +64,9 @@ func (r *PurchaseInvoicePurchaseInvoiceLinesCollectionRequest) Paging(ctx contex
 	}
 	var values []PurchaseInvoiceLine
 	for {
-		defer res.Body.Close()
 		if res.StatusCode != http.StatusOK {
 			b, _ := ioutil.ReadAll(res.Body)
+			res.Body.Close()
 			errRes := &ErrorResponse{Response: res}
 			err := jsonx.Unmarshal(b, errRes)
 			if err != nil {
@@ -79,6 +79,7 @@ func (r *PurchaseInvoicePurchaseInvoiceLinesCollectionRequest) Paging(ctx contex
 			value  []PurchaseInvoiceLine
 		)
 		err := jsonx.NewDecoder(res.Body).Decode(&paging)
+		res.Body.Close()
 		if err != nil {
 			return nil, err
 		}

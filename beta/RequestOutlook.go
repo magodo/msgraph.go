@@ -245,9 +245,9 @@ func (r *OutlookTaskCompleteRequest) Paging(ctx context.Context, method, path st
 	}
 	var values []OutlookTask
 	for {
-		defer res.Body.Close()
 		if res.StatusCode != http.StatusOK {
 			b, _ := ioutil.ReadAll(res.Body)
+			res.Body.Close()
 			errRes := &ErrorResponse{Response: res}
 			err := jsonx.Unmarshal(b, errRes)
 			if err != nil {
@@ -260,6 +260,7 @@ func (r *OutlookTaskCompleteRequest) Paging(ctx context.Context, method, path st
 			value  []OutlookTask
 		)
 		err := jsonx.NewDecoder(res.Body).Decode(&paging)
+		res.Body.Close()
 		if err != nil {
 			return nil, err
 		}
